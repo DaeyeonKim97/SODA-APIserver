@@ -2,12 +2,10 @@ package com.soda.apiserver.auth.model.entity;
 
 
 import com.soda.apiserver.file.model.entity.Attach;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
