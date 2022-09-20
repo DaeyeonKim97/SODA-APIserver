@@ -4,18 +4,23 @@ import com.soda.apiserver.auth.model.dto.SignUpDTO;
 import com.soda.apiserver.auth.model.entity.User;
 import com.soda.apiserver.auth.model.entity.UserRole;
 import com.soda.apiserver.auth.repository.UserRepository;
+import com.soda.apiserver.common.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.*;
 
-@Controller
+@RestController
 public class SignUpController {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -27,7 +32,12 @@ public class SignUpController {
     }
 
     @PostMapping("/signup")
-    public String signUp(@RequestBody SignUpDTO signUp, HttpServletResponse response){
+    public ResponseEntity<?> signUp(@RequestBody SignUpDTO signUp, HttpServletResponse response){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+
         try {
             List<UserRole> userRole = new ArrayList<>();
             userRole.add(new UserRole());
@@ -43,10 +53,20 @@ public class SignUpController {
             ));
         } catch (Exception e){
             System.out.println(e);
-            response.setStatus(400);
-            return "Not created";
+            responseMap.put("Input ID",signUp.getUserName());
+            responseMap.put("Input Email",signUp.getEmail());
+            return ResponseEntity
+                    .badRequest()
+                    .headers(headers)
+                    .body(new ResponseMessage(400, "user not created",responseMap));
         }
-        response.setStatus(201);
-        return "created";
+
+        responseMap.put("ID",signUp.getUserName());
+        responseMap.put("Email",signUp.getEmail());
+
+        return ResponseEntity
+                .created(URI.create("/users/"+signUp.getUserName()))
+                .headers(headers)
+                .body(new ResponseMessage(201, "user created",responseMap));
     }
 }
