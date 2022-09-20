@@ -33,7 +33,7 @@ public class SignUpController {
             userRole.add(new UserRole());
             repository.save(new User(0,
                     signUp.getUserName(),
-                    signUp.getPassword(),
+                    passwordEncoder.encode(signUp.getPassword()),
                     signUp.getEmail(),
                     new java.sql.Date(new Date().getTime()),
                     "N",
