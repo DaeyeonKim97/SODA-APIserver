@@ -1,2 +1,21 @@
+#ServerPort
 server:
   port: 8001
+
+#DataSource
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@soda_high?TNS_ADMIN=./src/main/resources/Wallet_SODA
+    username: SODA
+    password: Rlaeodus1130
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+#JWT
+jwt:
+  header: Authorization
+  secret: rutyweorituwyerotiuweyrtoiuweyrtoweiurtywoeighdfsojkghsdfgsdofiguwyertouw | base64YWprbGdoc2Rma2xnanNkaGZnbGprc2RmZ2hsc2
+  access-token-validity-in-seconds: 43200 #12 hours
