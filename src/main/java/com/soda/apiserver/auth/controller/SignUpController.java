@@ -64,7 +64,7 @@ public class SignUpController {
 
         } catch (Exception e){
             System.out.println(e);
-            responseMap.put("inputId",signUp.getUserName());
+            responseMap.put("inputUserName",signUp.getUserName());
             responseMap.put("inputEmail",signUp.getEmail());
             return ResponseEntity
                     .badRequest()
@@ -72,7 +72,7 @@ public class SignUpController {
                     .body(new ResponseMessage(400, "user not created",responseMap));
         }
 
-        responseMap.put("id",user.getUserName());
+        responseMap.put("userName",user.getUserName());
         responseMap.put("email",user.getEmail());
 
         return ResponseEntity
