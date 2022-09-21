@@ -1,5 +1,7 @@
 package com.soda.apiserver.auth.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,17 +16,14 @@ public class Role {
     private String roleName; //권한명
     @Column(name = "ROLE_DESC", nullable = true)
     private String roleDesc; //권한설명
-    @OneToMany(mappedBy = "role")
-    private List<UserRole> userRoleList;
 
     public Role() {
     }
 
-    public Role(int id, String roleName, String roleDesc, List<UserRole> userRoleList) {
+    public Role(int id, String roleName, String roleDesc) {
         this.id = id;
         this.roleName = roleName;
         this.roleDesc = roleDesc;
-        this.userRoleList = userRoleList;
     }
 
     public int getId() {
@@ -51,21 +50,12 @@ public class Role {
         this.roleDesc = roleDesc;
     }
 
-    public List<UserRole> getUserRoleList() {
-        return userRoleList;
-    }
-
-    public void setUserRoleList(List<UserRole> userRoleList) {
-        this.userRoleList = userRoleList;
-    }
-
     @Override
     public String toString() {
         return "Role{" +
                 "id=" + id +
                 ", roleName='" + roleName + '\'' +
                 ", roleDesc='" + roleDesc + '\'' +
-                ", userRoleList=" + userRoleList +
                 '}';
     }
 }
