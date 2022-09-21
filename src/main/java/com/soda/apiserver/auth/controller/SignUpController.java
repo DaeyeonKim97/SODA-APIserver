@@ -7,7 +7,7 @@ import com.soda.apiserver.auth.model.entity.UserRole;
 import com.soda.apiserver.auth.repository.RoleRepository;
 import com.soda.apiserver.auth.repository.UserRepository;
 import com.soda.apiserver.auth.repository.UserRoleRepository;
-import com.soda.common.response.ResponseMessage;
+import com.soda.apiserver.common.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
