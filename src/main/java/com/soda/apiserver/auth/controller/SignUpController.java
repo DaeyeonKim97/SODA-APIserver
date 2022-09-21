@@ -64,16 +64,16 @@ public class SignUpController {
 
         } catch (Exception e){
             System.out.println(e);
-            responseMap.put("Input ID",signUp.getUserName());
-            responseMap.put("Input Email",signUp.getEmail());
+            responseMap.put("inputId",signUp.getUserName());
+            responseMap.put("inputEmail",signUp.getEmail());
             return ResponseEntity
                     .badRequest()
                     .headers(headers)
                     .body(new ResponseMessage(400, "user not created",responseMap));
         }
 
-        responseMap.put("ID",user.getUserName());
-        responseMap.put("Email",user.getEmail());
+        responseMap.put("id",user.getUserName());
+        responseMap.put("email",user.getEmail());
 
         return ResponseEntity
                 .created(URI.create("/users/"+signUp.getUserName()))
