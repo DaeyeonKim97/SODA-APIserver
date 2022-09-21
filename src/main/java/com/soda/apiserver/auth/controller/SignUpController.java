@@ -54,7 +54,6 @@ public class SignUpController {
                     new java.sql.Date(new Date().getTime()),
                     "N",
                     null,
-                    null,
                     null
             ));
             System.out.println("user : "+user);
