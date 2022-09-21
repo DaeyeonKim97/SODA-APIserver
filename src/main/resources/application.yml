@@ -11,8 +11,8 @@ spring:
     password: Rlaeodus1130
   jpa:
     show-sql: true
-    hibernate:
-      ddl-auto: create-drop
+#    hibernate:
+#      ddl-auto: create
 
 #JWT
 jwt:

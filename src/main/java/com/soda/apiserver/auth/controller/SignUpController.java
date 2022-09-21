@@ -13,18 +13,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
 
 @RestController
+@RequestMapping("/signup")
 public class SignUpController {
     private final UserRepository repository;
     private final UserRoleRepository userRoleRepository;
@@ -39,7 +38,7 @@ public class SignUpController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/signup")
+    @PostMapping
     public ResponseEntity<?> signUp(@RequestBody SignUpDTO signUp){
 
         HttpHeaders headers = new HttpHeaders();
@@ -55,7 +54,6 @@ public class SignUpController {
                     new java.sql.Date(new Date().getTime()),
                     "N",
                     null,
-                    null,
                     null
             ));
             System.out.println("user : "+user);
@@ -65,16 +63,16 @@ public class SignUpController {
 
         } catch (Exception e){
             System.out.println(e);
-            responseMap.put("Input ID",signUp.getUserName());
-            responseMap.put("Input Email",signUp.getEmail());
+            responseMap.put("inputUserName",signUp.getUserName());
+            responseMap.put("inputEmail",signUp.getEmail());
             return ResponseEntity
                     .badRequest()
                     .headers(headers)
                     .body(new ResponseMessage(400, "user not created",responseMap));
         }
 
-        responseMap.put("ID",user.getUserName());
-        responseMap.put("Email",user.getEmail());
+        responseMap.put("userName",user.getUserName());
+        responseMap.put("email",user.getEmail());
 
         return ResponseEntity
                 .created(URI.create("/users/"+signUp.getUserName()))

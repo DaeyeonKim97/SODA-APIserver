@@ -1,6 +1,7 @@
 package com.soda.apiserver.auth.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.soda.apiserver.file.model.entity.Attach;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.util.List;
         initialValue = 100,
         allocationSize = 1
 )
-public class User implements Serializable {
+public class User {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -41,13 +42,10 @@ public class User implements Serializable {
     @JoinColumn(name = "ATTACH_ID")
     private Attach profileImg;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserRole> userRoleList;
-
     public User() {
     }
 
-    public User(int id, String userName, String password, String email, Date joinDate, String isDeleted, Date deletedDate, Attach profileImg, List<UserRole> userRoleList) {
+    public User(int id, String userName, String password, String email, Date joinDate, String isDeleted, Date deletedDate, Attach profileImg) {
         this.id = id;
         this.userName = userName;
         this.password = password;
@@ -56,7 +54,6 @@ public class User implements Serializable {
         this.isDeleted = isDeleted;
         this.deletedDate = deletedDate;
         this.profileImg = profileImg;
-        this.userRoleList = userRoleList;
     }
 
     public int getId() {
@@ -123,14 +120,6 @@ public class User implements Serializable {
         this.profileImg = profileImg;
     }
 
-    public List<UserRole> getUserRoleList() {
-        return userRoleList;
-    }
-
-    public void setUserRoleList(List<UserRole> userRoleList) {
-        this.userRoleList = userRoleList;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -142,7 +131,6 @@ public class User implements Serializable {
                 ", isDeleted='" + isDeleted + '\'' +
                 ", deletedDate=" + deletedDate +
                 ", profileImg=" + profileImg +
-                ", userRoleList=" + userRoleList +
                 '}';
     }
 }
