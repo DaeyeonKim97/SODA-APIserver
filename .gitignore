@@ -35,3 +35,4 @@ build/
 ### configuration ###
 application-config.yml
 Wallet_SODA
+application.yml
