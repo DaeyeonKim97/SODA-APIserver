@@ -117,7 +117,7 @@ public class FollowController {
         User user = userRepository.findByUserName(userName);
         User follower = userRepository.findByUserName(followerName);
 
-        if(user == null){
+        if(user == null || user.getUserName() == follower.getUserName()){
             return ResponseEntity
                     .badRequest()
                     .build();
