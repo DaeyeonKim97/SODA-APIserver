@@ -66,30 +66,36 @@ public class FollowController {
                 .body(new ResponseMessage(200, "success",responseMap));
     }
 
-    @GetMapping("follower")
-    public ResponseEntity<?> selectFollowerUser(){
+    @GetMapping("{userName}")
+    public ResponseEntity<?> selectFollowerUser(@PathVariable("userName") String userName){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
         Map<String,Object> responseMap = new HashMap<>();
-        String userName = null;
-
-        try{
-            userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        } catch (Exception e){
-            return ResponseEntity
-                    .badRequest()
-                    .build();
-        }
 
         User user = userRepository.findByUserName(userName);
+
+        List<Follow> followingList = followRepository.findFollowByIdFollower(user);
+        List<OtherUserDTO> followingUserList = new ArrayList<>();
+        for(Follow following : followingList){
+            followingUserList.add(new OtherUserDTO(following.getId().getUser()));
+        }
+        Map<String,Object> followingMap = new HashMap<>();
+        followingMap.put("count",followingUserList.size());
+        followingMap.put("list",followingUserList);
+
         List<Follow> followerList = followRepository.findFollowByIdUser(user);
         List<OtherUserDTO> followerUserList = new ArrayList<>();
         for(Follow follow : followerList){
             followerUserList.add(new OtherUserDTO(follow.getId().getFollower()));
         }
+        Map<String,Object> followerMap = new HashMap<>();
+        followerMap.put("count",followerUserList.size());
+        followerMap.put("list",followerUserList);
 
-        responseMap.put("count",followerUserList.size());
-        responseMap.put("follower list",followerUserList);
+
+        responseMap.put("userName",userName);
+        responseMap.put("following",followingMap);
+        responseMap.put("follower",followerMap);
 
 
         return ResponseEntity
