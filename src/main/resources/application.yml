@@ -1,6 +1,11 @@
 #ServerPort
 server:
   port: 8001
+#  ssl:
+#    enable: true
+#    key-store: ./keystore.p12
+#    key-store-type: PKCS12
+#    key-store-password: rlaeodus95
 
 #DataSource
 spring:
@@ -24,3 +29,4 @@ jwt:
   header: Authorization
   secret: rutyweorituwyerotiuweyrtoiuweyrtoweiurtywoeighdfsojkghsdfgsdofiguwyertouw | base64YWprbGdoc2Rma2xnanNkaGZnbGprc2RmZ2hsc2
   access-token-validity-in-seconds: 43200 #12 hours
+
