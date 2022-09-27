@@ -85,7 +85,7 @@ public class FollowController {
         List<Follow> followerList = followRepository.findFollowByIdUser(user);
         List<OtherUserDTO> followerUserList = new ArrayList<>();
         for(Follow follower : followerList){
-            followerUserList.add(new OtherUserDTO(follower.getId().getUser()));
+            followerUserList.add(new OtherUserDTO(follower.getId().getFollower()));
         }
 
         responseMap.put("count",followerUserList.size());
