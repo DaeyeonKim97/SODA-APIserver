@@ -57,7 +57,39 @@ public class FollowController {
         }
 
         responseMap.put("count",followingUserList.size());
-        responseMap.put("follower list",followingUserList);
+        responseMap.put("following list",followingUserList);
+
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "success",responseMap));
+    }
+
+    @GetMapping("follower")
+    public ResponseEntity<?> selectFollowerUser(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+        String userName = null;
+
+        try{
+            userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+
+        User user = userRepository.findByUserName(userName);
+        List<Follow> followerList = followRepository.findFollowByIdUser(user);
+        List<OtherUserDTO> followerUserList = new ArrayList<>();
+        for(Follow follower : followerList){
+            followerUserList.add(new OtherUserDTO(follower.getId().getUser()));
+        }
+
+        responseMap.put("count",followerUserList.size());
+        responseMap.put("follower list",followerUserList);
 
 
         return ResponseEntity
