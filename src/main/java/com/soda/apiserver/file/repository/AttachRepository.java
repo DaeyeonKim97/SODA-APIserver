@@ -4,4 +4,5 @@ import com.soda.apiserver.file.model.entity.Attach;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AttachRepository extends JpaRepository<Attach, Integer> {
+    Attach findAttachBySavedName(String savedName);
 }
