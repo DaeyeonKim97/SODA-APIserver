@@ -80,7 +80,6 @@ public class ReviewController {
         pageMap.put("size",pageable.getPageSize());
 
         responseMap.put("userName", userName);
-        System.out.println("user?? "+user);
         responseMap.put("count",reviewRepository.countReviewByUser(user));
         responseMap.put("list", reviewResponseDTOList);
         responseMap.put("page",pageMap);
@@ -161,5 +160,45 @@ public class ReviewController {
                 .created(URI.create("/review"))
                 .headers(headers)
                 .body(new ResponseMessage(201, "review created",responseMap));
+    }
+
+    @DeleteMapping("{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable int reviewId){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+        String username = null;
+        try{
+            username = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+        Review deleteReview = reviewRepository.findById(reviewId);
+        if (deleteReview == null){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ResponseMessage(400, "no review with id",null));
+        }
+
+        System.out.println(username);
+        System.out.println(deleteReview.getUser().getUserName());
+
+        if(deleteReview.getUser().getUserName().equals(username)){
+            Attach attach = deleteReview.getAttach();
+            reviewRepository.delete(deleteReview);
+            attachRepository.delete(attach);
+        }
+        else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ResponseMessage(400, "cannot delete other's review",null));
+        }
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
