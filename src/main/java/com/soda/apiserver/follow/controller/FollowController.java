@@ -123,10 +123,13 @@ public class FollowController {
         User user = userRepository.findByUserName(userName);
         User follower = userRepository.findByUserName(followerName);
 
+        System.out.println(user);
+        System.out.println(follower);
+
         if(user == null || user.getUserName() == follower.getUserName()){
             return ResponseEntity
                     .badRequest()
-                    .build();
+                    .body(new ResponseMessage(400, "cannot follow yourself", null));
         }
 
         Follow insertFollow = new Follow(new FollowId(user,follower),
