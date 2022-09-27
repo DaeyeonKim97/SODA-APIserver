@@ -7,6 +7,8 @@ import com.soda.apiserver.common.response.ResponseMessage;
 import com.soda.apiserver.file.model.entity.Attach;
 import com.soda.apiserver.file.repository.AttachRepository;
 import com.soda.apiserver.file.util.OciUtil;
+import com.soda.apiserver.follow.model.entity.Follow;
+import com.soda.apiserver.follow.repository.FollowRepository;
 import com.soda.apiserver.review.model.dto.ReviewResponseDTO;
 import com.soda.apiserver.review.model.entity.Category;
 import com.soda.apiserver.review.model.entity.Review;
@@ -39,17 +41,19 @@ public class ReviewController {
     private final RestaurantRepository restaurantRepository;
     private final CategoryRepository categoryRepository;
     private final AttachRepository attachRepository;
+    private final FollowRepository followRepository;
     private final OciUtil ociUtil = new OciUtil();
     @Value("${spring.servlet.multipart.location}")
     private String configPath;
 
     @Autowired
-    public ReviewController(UserRepository userRepository, ReviewRepository reviewRepository, RestaurantRepository restaurantRepository, CategoryRepository categoryRepository, AttachRepository attachRepository) throws IOException {
+    public ReviewController(UserRepository userRepository, ReviewRepository reviewRepository, RestaurantRepository restaurantRepository, CategoryRepository categoryRepository, AttachRepository attachRepository, FollowRepository followRepository) throws IOException {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.restaurantRepository = restaurantRepository;
         this.categoryRepository = categoryRepository;
         this.attachRepository = attachRepository;
+        this.followRepository = followRepository;
     }
 
     @GetMapping("{userName}")
@@ -200,5 +204,55 @@ public class ReviewController {
         return ResponseEntity
                 .noContent()
                 .build();
+    }
+
+    @GetMapping("following")
+    public ResponseEntity<?> getUserReviewList(Pageable pageable){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+        String userName = null;
+
+        try{
+            userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+        User user = userRepository.findByUserName(userName);
+        List<Follow> followingList = followRepository.findFollowByIdFollower(user);
+        List<User> userList = new ArrayList<>();
+        for (Follow following : followingList){
+            userList.add(following.getId().getUser());
+        }
+
+        List<Review> reviewList = reviewRepository.findReviewByUserInOrderByCreateDateDesc(userList, pageable);
+        List<ReviewResponseDTO> reviewResponseDTOList = new ArrayList<>();
+
+        for(Review review : reviewList){
+            reviewResponseDTOList.add(
+                    new ReviewResponseDTO(
+                            review.getId(), new OtherUserDTO(review.getUser()),
+                            review.getCategory().getName(), review.getRestaurant(), review.getAttach().getSavedPath(),
+                            review.getGrade(), review.getContent(), review.getCreateDate()
+                    )
+            );
+        }
+
+        Map<String, Object> pageMap = new HashMap<>();
+        pageMap.put("page",pageable.getPageNumber());
+        pageMap.put("size",pageable.getPageSize());
+
+        responseMap.put("userName", userName);
+        responseMap.put("count",reviewRepository.countReviewByUser(user));
+        responseMap.put("list", reviewResponseDTOList);
+        responseMap.put("page",pageMap);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "success",responseMap));
     }
 }

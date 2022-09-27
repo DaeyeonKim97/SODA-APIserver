@@ -13,4 +13,5 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
     List<Review> findReviewByUserOrderByCreateDateDesc(User user, Pageable pageable);
     Review findReviewByRestaurantAndUser(Restaurant restaurant, User user);
     Review findById(int id);
+    List<Review> findReviewByUserInOrderByCreateDateDesc(List<User> userList,Pageable pageable);
 }
