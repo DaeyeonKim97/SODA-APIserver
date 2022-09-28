@@ -11,8 +11,12 @@ import com.soda.apiserver.follow.model.entity.Follow;
 import com.soda.apiserver.follow.repository.FollowRepository;
 import com.soda.apiserver.review.model.dto.ReviewResponseDTO;
 import com.soda.apiserver.review.model.entity.Category;
+import com.soda.apiserver.review.model.entity.Like;
 import com.soda.apiserver.review.model.entity.Review;
+import com.soda.apiserver.review.model.entity.embed.LikeId;
 import com.soda.apiserver.review.repository.CategoryRepository;
+import com.soda.apiserver.review.repository.CommentRepository;
+import com.soda.apiserver.review.repository.LikeRepository;
 import com.soda.apiserver.review.repository.ReviewRepository;
 import com.soda.apiserver.wish.model.entity.Restaurant;
 import com.soda.apiserver.wish.repository.RestaurantRepository;
@@ -42,18 +46,54 @@ public class ReviewController {
     private final CategoryRepository categoryRepository;
     private final AttachRepository attachRepository;
     private final FollowRepository followRepository;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     private final OciUtil ociUtil = new OciUtil();
     @Value("${spring.servlet.multipart.location}")
     private String configPath;
 
     @Autowired
-    public ReviewController(UserRepository userRepository, ReviewRepository reviewRepository, RestaurantRepository restaurantRepository, CategoryRepository categoryRepository, AttachRepository attachRepository, FollowRepository followRepository) throws IOException {
+    public ReviewController(UserRepository userRepository, ReviewRepository reviewRepository, RestaurantRepository restaurantRepository, CategoryRepository categoryRepository, AttachRepository attachRepository, FollowRepository followRepository, LikeRepository likeRepository, CommentRepository commentRepository) throws IOException {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.restaurantRepository = restaurantRepository;
         this.categoryRepository = categoryRepository;
         this.attachRepository = attachRepository;
         this.followRepository = followRepository;
+        this.likeRepository = likeRepository;
+        this.commentRepository = commentRepository;
+    }
+
+    @GetMapping ("recent")
+    public ResponseEntity<?> recentReview(Pageable pageable){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+
+        List<Review> reviewList = reviewRepository.findAllByOrderByCreateDateDesc(pageable);
+        List<ReviewResponseDTO> reviewResponseDTOList = new ArrayList<>();
+
+        for(Review review : reviewList){
+            reviewResponseDTOList.add(
+                    new ReviewResponseDTO(
+                            review.getId(), new OtherUserDTO(review.getUser()),
+                            review.getCategory().getName(), review.getRestaurant(), review.getAttach().getSavedPath(),
+                            review.getGrade(), review.getContent(), review.getCreateDate()
+                    )
+            );
+        }
+
+        Map<String, Object> pageMap = new HashMap<>();
+        pageMap.put("page",pageable.getPageNumber());
+        pageMap.put("size",pageable.getPageSize());
+
+        responseMap.put("list", reviewResponseDTOList);
+        responseMap.put("page",pageMap);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "success",responseMap));
     }
 
     @GetMapping("{userName}")
@@ -93,6 +133,8 @@ public class ReviewController {
                 .headers(headers)
                 .body(new ResponseMessage(200, "success",responseMap));
     }
+
+
 
     @PostMapping
     public ResponseEntity<?> insertReview(@RequestParam MultipartFile[] uploadFile, @RequestParam int restaurantId , @RequestParam String categoryName, @RequestParam String content, @RequestParam int grade) throws Exception {
@@ -249,6 +291,48 @@ public class ReviewController {
         responseMap.put("count",reviewRepository.countReviewByUser(user));
         responseMap.put("list", reviewResponseDTOList);
         responseMap.put("page",pageMap);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "success",responseMap));
+    }
+
+    @PostMapping("like/{reviewId}")
+    public ResponseEntity<?> likeReview(@PathVariable int reviewId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+        String userName = null;
+
+        try{
+            userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+        User user = userRepository.findByUserName(userName);
+        Review review = reviewRepository.findById(reviewId);
+
+        Like like = new Like(new LikeId(review,user),new java.sql.Date((new Date()).getTime()));
+        likeRepository.save(like);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "success",responseMap));
+    }
+
+    @GetMapping("like/{reviewId}")
+    public ResponseEntity<?> reviewLikeList(@PathVariable int reviewId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+
+        Review review = reviewRepository.findById(reviewId);
+
+//        List<Like> likeList = likeRepository.findLikeByIdReviewId(reviewId);
 
         return ResponseEntity
                 .ok()

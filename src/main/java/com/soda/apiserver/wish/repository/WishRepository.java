@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface WishRepository extends JpaRepository<Wish, WishId> {
     List<Wish> findWishByIdUser(User user);
+    List<Wish> findWishByIdUserUserName(String username);
     List<Wish> findWishByIdRestaurant(Restaurant restaurant);
 }
