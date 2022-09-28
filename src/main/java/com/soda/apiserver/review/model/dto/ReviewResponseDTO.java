@@ -1,6 +1,7 @@
 package com.soda.apiserver.review.model.dto;
 
 import com.soda.apiserver.auth.model.dto.OtherUserDTO;
+import com.soda.apiserver.review.model.entity.Review;
 import com.soda.apiserver.wish.model.entity.Restaurant;
 
 import java.util.Date;
@@ -27,6 +28,17 @@ public class ReviewResponseDTO {
         this.grade = grade;
         this.content = content;
         this.createDate = createDate;
+    }
+
+    public ReviewResponseDTO(Review review){
+        this.id = review.getId();
+        this.user = new OtherUserDTO(review.getUser());
+        this.categoryName = review.getCategory().getName();
+        this.restaurant = review.getRestaurant();
+        this.imageSrc = review.getAttach().getSavedPath();
+        this.grade = review.getGrade();
+        this.content = review.getContent();
+        this.createDate = review.getCreateDate();
     }
 
     public int getId() {
