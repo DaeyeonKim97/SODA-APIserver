@@ -1,7 +1,7 @@
 package com.soda.apiserver.wish.controller;
 
-import com.soda.apiserver.auth.model.entity.User;
-import com.soda.apiserver.auth.repository.UserRepository;
+import com.soda.apiserver.user.model.entity.User;
+import com.soda.apiserver.user.repository.UserRepository;
 import com.soda.apiserver.common.response.ResponseMessage;
 import com.soda.apiserver.wish.model.dto.RestaurantIdDTO;
 import com.soda.apiserver.wish.model.entity.Restaurant;

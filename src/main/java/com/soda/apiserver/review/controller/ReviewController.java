@@ -1,8 +1,8 @@
 package com.soda.apiserver.review.controller;
 
-import com.soda.apiserver.auth.model.dto.OtherUserDTO;
-import com.soda.apiserver.auth.model.entity.User;
-import com.soda.apiserver.auth.repository.UserRepository;
+import com.soda.apiserver.user.model.dto.OtherUserDTO;
+import com.soda.apiserver.user.model.entity.User;
+import com.soda.apiserver.user.repository.UserRepository;
 import com.soda.apiserver.common.response.ResponseMessage;
 import com.soda.apiserver.file.model.entity.Attach;
 import com.soda.apiserver.file.repository.AttachRepository;

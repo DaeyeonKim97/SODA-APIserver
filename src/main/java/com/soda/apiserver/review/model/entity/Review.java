@@ -1,6 +1,6 @@
 package com.soda.apiserver.review.model.entity;
 
-import com.soda.apiserver.auth.model.entity.User;
+import com.soda.apiserver.user.model.entity.User;
 import com.soda.apiserver.file.model.entity.Attach;
 import com.soda.apiserver.wish.model.entity.Restaurant;
 

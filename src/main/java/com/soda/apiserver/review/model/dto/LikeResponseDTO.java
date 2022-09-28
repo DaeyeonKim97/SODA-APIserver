@@ -1,7 +1,7 @@
 package com.soda.apiserver.review.model.dto;
 
-import com.soda.apiserver.auth.model.dto.OtherUserDTO;
-import com.soda.apiserver.auth.model.entity.User;
+import com.soda.apiserver.user.model.dto.OtherUserDTO;
+import com.soda.apiserver.user.model.entity.User;
 
 import java.util.Date;
 

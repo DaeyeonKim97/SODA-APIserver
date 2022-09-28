@@ -1,6 +1,6 @@
 package com.soda.apiserver.follow.repository;
 
-import com.soda.apiserver.auth.model.entity.User;
+import com.soda.apiserver.user.model.entity.User;
 import com.soda.apiserver.follow.model.entity.Follow;
 import com.soda.apiserver.follow.model.entity.embed.FollowId;
 import org.springframework.data.jpa.repository.JpaRepository;

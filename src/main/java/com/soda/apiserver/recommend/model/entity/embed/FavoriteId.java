@@ -1,6 +1,6 @@
 package com.soda.apiserver.recommend.model.entity.embed;
 
-import com.soda.apiserver.auth.model.entity.User;
+import com.soda.apiserver.user.model.entity.User;
 import com.soda.apiserver.review.model.entity.Category;
 
 import javax.persistence.Embeddable;

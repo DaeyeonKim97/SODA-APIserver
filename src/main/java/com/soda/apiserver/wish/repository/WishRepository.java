@@ -1,6 +1,6 @@
 package com.soda.apiserver.wish.repository;
 
-import com.soda.apiserver.auth.model.entity.User;
+import com.soda.apiserver.user.model.entity.User;
 import com.soda.apiserver.wish.model.entity.Restaurant;
 import com.soda.apiserver.wish.model.entity.Wish;
 import com.soda.apiserver.wish.model.entity.embed.WishId;

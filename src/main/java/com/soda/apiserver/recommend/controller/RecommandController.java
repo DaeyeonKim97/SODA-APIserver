@@ -2,8 +2,8 @@ package com.soda.apiserver.recommend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soda.apiserver.auth.model.entity.User;
-import com.soda.apiserver.auth.repository.UserRepository;
+import com.soda.apiserver.user.model.entity.User;
+import com.soda.apiserver.user.repository.UserRepository;
 import com.soda.apiserver.common.response.ResponseMessage;
 import com.soda.apiserver.recommend.model.dto.request.AiFavoriteDTO;
 import com.soda.apiserver.recommend.model.dto.request.AiReviewListDTO;

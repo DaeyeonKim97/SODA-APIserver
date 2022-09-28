@@ -1,6 +1,6 @@
 package com.soda.apiserver.review.model.dto;
 
-import com.soda.apiserver.auth.model.dto.OtherUserDTO;
+import com.soda.apiserver.user.model.dto.OtherUserDTO;
 import com.soda.apiserver.review.model.entity.Review;
 import com.soda.apiserver.wish.model.entity.Restaurant;
 
