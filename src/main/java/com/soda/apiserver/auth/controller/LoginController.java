@@ -3,6 +3,7 @@ package com.soda.apiserver.auth.controller;
 import com.soda.apiserver.auth.model.dto.LoginDTO;
 import com.soda.apiserver.auth.util.JwtUtil;
 import com.soda.apiserver.common.response.ResponseMessage;
+import com.soda.apiserver.recommend.repository.FavoriteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,11 +24,13 @@ import java.util.Map;
 public class LoginController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final FavoriteRepository favoriteRepository;
 
     @Autowired
-    public LoginController(JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
+    public LoginController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, FavoriteRepository favoriteRepository) {
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
+        this.favoriteRepository = favoriteRepository;
     }
 
     @PostMapping
@@ -37,6 +40,7 @@ public class LoginController {
         Map<String,Object> responseMap = new HashMap<>();
 
         String token = null;
+        Boolean selectCategory = false;
 
         try{
             authenticationManager.authenticate(
@@ -53,9 +57,15 @@ public class LoginController {
                     .headers(headers)
                     .body(new ResponseMessage(400, "login failed", responseMap));
         }
+
+        if(favoriteRepository.findFavoriteByIdUserUserName(loginInfo.getUserName()).size() == 0){
+            selectCategory = true;
+        };
+
         token = jwtUtil.generateToken(loginInfo.getUserName());
         responseMap.put("id",loginInfo.getUserName());
         responseMap.put("token",token);
+        responseMap.put("needSelect",selectCategory);
         return ResponseEntity
                 .ok()
                 .headers(headers)
