@@ -26,4 +26,13 @@
 
         ]]>
     </select>
+    <select id="selectUserFavoriteById2" parameterType="String" resultType="String">
+        <![CDATA[
+        SELECT
+             B.CATEGORY_NAME
+        FROM TBL_USER_FAVORIT A
+                 JOIN TBL_CATEGORY B ON ( A.CATEGORY_ID = B.CATEGORY_ID)
+        WHERE USER_ID = #{ userId }
+        ]]>
+    </select>
 </mapper>

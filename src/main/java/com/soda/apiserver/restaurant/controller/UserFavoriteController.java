@@ -5,6 +5,7 @@ import com.soda.apiserver.common.paging.ResponseDtoWithPaging;
 import com.soda.apiserver.common.paging.SelectCriteria;
 import com.soda.apiserver.common.response.ResponseDto;
 import com.soda.apiserver.restaurant.dto.UserFavoriteDto;
+import com.soda.apiserver.restaurant.dto.UserFavoriteListDto;
 import com.soda.apiserver.restaurant.service.UserFavoriteService;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -30,10 +31,20 @@ public class UserFavoriteController {
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "조회 성공", favorite));
     }
 
-
     @GetMapping()
     public ResponseEntity<ResponseDto> selectUserFavoriteById(@RequestParam String userId) {
         return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "조회 성공", userFavoriteService.selectUserFavoriteById(userId)));
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<ResponseDto> insertUserFavoriteCategoryList(@RequestBody UserFavoriteListDto favoriteList) {
+        userFavoriteService.insertUserFavoriteList(favoriteList);
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "입력 성공", favoriteList));
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<ResponseDto> selectUserFavoriteByIdForAI(@RequestParam String userId) {
+        return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK, "조회 성공", userFavoriteService.selectUserFavoriteByIdForAI(userId)));
     }
 
 }
