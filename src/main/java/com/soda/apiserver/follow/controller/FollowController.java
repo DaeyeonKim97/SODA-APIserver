@@ -136,6 +136,50 @@ public class FollowController {
                 .body(new ResponseMessage(200, "success",responseMap));
     }
 
+    @GetMapping("following/{userName}")
+    public ResponseEntity<?> selectUserFollowingUser(@PathVariable("userName") String userName){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        User user = userRepository.findByUserName(userName);
+
+        List<Follow> followingList = followRepository.findFollowByIdFollower(user);
+        List<OtherUserDTO> followingUserList = new ArrayList<>();
+        for(Follow following : followingList){
+            followingUserList.add(new OtherUserDTO(following.getId().getUser()));
+        }
+        Map<String,Object> followingMap = new HashMap<>();
+        followingMap.put("count",followingUserList.size());
+        followingMap.put("list",followingUserList);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "success",followingMap));
+    }
+
+    @GetMapping("follower/{userName}")
+    public ResponseEntity<?> selectUserFollowerUser(@PathVariable("userName") String userName){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        User user = userRepository.findByUserName(userName);
+
+        List<Follow> followerList = followRepository.findFollowByIdUser(user);
+        List<OtherUserDTO> followerUserList = new ArrayList<>();
+        for(Follow follow : followerList){
+            followerUserList.add(new OtherUserDTO(follow.getId().getFollower()));
+        }
+        Map<String,Object> followerMap = new HashMap<>();
+        followerMap.put("count",followerUserList.size());
+        followerMap.put("list",followerUserList);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "success",followerMap));
+    }
+
     @PostMapping("/{userName}")
     public ResponseEntity<?> followUser(@PathVariable("userName") String userName){
 
