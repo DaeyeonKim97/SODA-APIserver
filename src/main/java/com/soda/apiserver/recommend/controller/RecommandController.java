@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soda.apiserver.auth.model.entity.User;
 import com.soda.apiserver.auth.repository.UserRepository;
 import com.soda.apiserver.common.response.ResponseMessage;
-import com.soda.apiserver.recommend.model.dto.AiFavoriteDTO;
-import com.soda.apiserver.recommend.model.dto.AiReviewListDTO;
+import com.soda.apiserver.recommend.model.dto.request.AiFavoriteDTO;
+import com.soda.apiserver.recommend.model.dto.request.AiReviewListDTO;
 import com.soda.apiserver.recommend.model.entity.Favorite;
 import com.soda.apiserver.recommend.repository.FavoriteRepository;
 import com.soda.apiserver.review.model.entity.Review;
@@ -78,8 +78,8 @@ public class RecommandController {
         HttpEntity<?> requestMessage = new HttpEntity<>(requestJSON,headers);
         HttpEntity<String> response = restTemplate.postForEntity(url, requestMessage,String.class);
 
-        System.out.println(response);
-        responseMap.put("response",response);
+        Map<String,Object> responseObject = mapper.readValue(response.getBody(),Map.class);
+        responseMap.put("response",responseObject);
 
         return ResponseEntity
                 .ok()
