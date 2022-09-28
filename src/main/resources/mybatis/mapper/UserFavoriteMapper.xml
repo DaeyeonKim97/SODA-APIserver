@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soda.apiserver.restaurant.dao.UserFavoriteMapper">
+    <select id="insertUserFavoriteData" resultType ="UserFavoriteDTO">
+        INSERT INTO TBL_USER_FAVORIT
+        (
+              USER_FAVORIT_ID
+            , USER_ID
+            , CATEGORY_ID
+        )
+        VALUES
+        (
+              SEQ_USER_FAVORIT_ID.NEXTVAL
+            , #{userId}
+            , #{categoryId}
+        )
+    </select>
+    <select id="selectUserFavoriteById" parameterType="String" resultType="userFavoriteDto">
+        <![CDATA[
+            SELECT
+                *
+            FROM TBL_USER_FAVORIT
+            WHERE User_ID = #{userId}
+
+        ]]>
+    </select>
+</mapper>

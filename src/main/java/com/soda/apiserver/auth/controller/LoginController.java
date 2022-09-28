@@ -9,10 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -30,6 +27,11 @@ public class LoginController {
         this.authenticationManager = authenticationManager;
     }
 
+    @GetMapping
+    public ResponseEntity<String> callApi(){
+        System.out.println("호출!");
+        return ResponseEntity.ok().body("성공!");
+    }
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginDTO loginInfo){
         HttpHeaders headers = new HttpHeaders();

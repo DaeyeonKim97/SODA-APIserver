@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soda.apiserver.restaurant.dao.RestaurantMapper">
+    <select id="insertRestaurantList" resultType ="RestaurantDTO">
+        INSERT INTO TBL_RESTAURANT
+        (
+            ID
+        , NAME
+        , ADDRESS
+        , BIZHOUR_INFO
+        , X
+        , Y
+        , PHONE
+        , DESCRIPTION
+        , IMAGE_PATH
+        )
+        VALUES
+            (
+              #{id}
+            , #{name}
+            , #{address}
+            , #{bizhorInfo}
+            , #{x}
+            , #{y}
+            , #{phone}
+            , #{description}
+            , #{image}
+            )
+    </select>
+
+    <select id="selectRestaurantListWithPaging" parameterType="SelectCriteria" resultType="RestaurantDTO">
+        <![CDATA[
+         SELECT
+                *
+          FROM
+            (
+                SELECT
+                    ROWNUM AS RN
+                       , P.*
+                 FROM (
+                        SELECT
+                            TR.*
+                          FROM TBL_RESTAURANT TR
+                         ORDER BY TR.ID DESC
+                       ) P
+            )
+            WHERE RN <= #{ endRow }
+            AND RN >= #{ startRow }
+
+        ]]>
+    </select>
+    <select id="selectRestaurantWithId" parameterType="String" resultType="RestaurantDTO">
+        SELECT
+            A.*
+        FROM TBL_RESTAURANT A
+        WHERE ID = #{ restaurantId }
+    </select>
+   <select id="createRestaurantTable" resultType="boolean">
+        CREATE TABLE TBL_RESTAURANT
+        (
+            ID  NUMBER,
+            NAME VARCHAR2(100),
+            ADDRESS  VARCHAR2(255),
+            BIZHOUR_INFO VARCHAR2(100),
+            X NUMBER,
+            Y NUMBER,
+            PHONE VARCHAR2(100) ,
+            DESCRIPTION  VARCHAR2(4000),
+            IMAGE_PATH VARCHAR2(255),
+            VIEWS NUMBER
+        )
+    </select>
+    <select id="updateRestaurantView" parameterType="String">
+        UPDATE TBL_RESTAURANT
+        SET VIEWS = VIEWS + 1
+        WHERE ID = #{ restaurantId }
+    </select>
+
+    <select id="selectRestaurantTotal" resultType="int">
+        SELECT
+            count(*)
+        FROM TBL_RESTAURANT
+    </select>
+</mapper>

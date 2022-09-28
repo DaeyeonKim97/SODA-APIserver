@@ -40,7 +40,6 @@ public class SignUpController {
 
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody SignUpDTO signUp){
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
         Map<String,Object> responseMap = new HashMap<>();

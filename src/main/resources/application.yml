@@ -19,3 +19,11 @@ jwt:
   header: Authorization
   secret: rutyweorituwyerotiuweyrtoiuweyrtoweiurtywoeighdfsojkghsdfgsdofiguwyertouw | base64YWprbGdoc2Rma2xnanNkaGZnbGprc2RmZ2hsc2
   access-token-validity-in-seconds: 43200 #12 hours
+
+#mybatis
+mybatis:
+  mapper-locations: mybatis/mapper/*.xml
+  type-aliases-package: com.soda.apiserver
+  configuration:
+    map-underscore-to-camel-case: true
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soda.apiserver.restaurant.dao.CategoryMapper">
+    <select id="insertCategory" resultType ="CategoryDTO">
+        INSERT INTO TBL_CATEGORY
+        (
+              CATEGORY_ID
+            , CATEGORY_NAME
+            , IMAGE
+        )
+        VALUES
+        (
+            SEQ_CATEGORY_ID.NEXTVAL
+            , #{categoryName}
+            , #{image}
+        )
+    </select>
+    <select id="selectCategoryListWithPaging" resultType ="CategoryDTO" parameterType="SelectCriteria">
+        <![CDATA[
+        SELECT
+            *
+        FROM
+            (
+                SELECT
+                    ROWNUM AS RN
+                     , P.*
+                FROM (
+                         SELECT
+                             TC.*
+                         FROM TBL_CATEGORY TC
+                         ORDER BY TC.CATEGORY_ID DESC
+                     ) P
+            )
+        WHERE RN <= #{ endRow }
+          AND RN >= #{ startRow }
+        ]]>
+    </select>
+    <select id="selectCategoryTotal" resultType="int">
+        SELECT
+            count(*)
+        FROM TBL_CATEGORY P
+    </select>
+    <select id="selectCategoryById" parameterType="String" resultType="CategoryDTO">
+        SELECT
+            A.*
+        FROM TBL_CATEGORY A
+        WHERE CATEGORY_ID = #{ categoryId }
+    </select>
+</mapper>

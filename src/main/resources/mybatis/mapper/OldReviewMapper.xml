@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soda.apiserver.restaurant.dao.OldReviewMapper">
+    <select id="insertOldReview" resultType ="OldReviewDTO">
+        INSERT INTO TBL_OLD_REVIEW
+        (
+              OLD_REVIEW_ID
+            , RESTAURANT_ID
+            , BODY
+            , THUMBNAIL
+        )
+        VALUES
+        (
+            SEQ_OLD_REVIEW_ID.NEXTVAL
+            , #{restaurantId}
+            , #{body}
+            , #{thumbnail}
+        )
+    </select>
+    <select id="selectOldReviewsWithId" parameterType="String" resultType="OldReviewDTO">
+        SELECT
+            A.*
+        FROM TBL_OLD_REVIEW A
+        WHERE OLD_REVIEW_ID = #{ reviewId }
+    </select>
+</mapper>
