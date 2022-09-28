@@ -9,6 +9,7 @@ import com.soda.apiserver.file.repository.AttachRepository;
 import com.soda.apiserver.file.util.OciUtil;
 import com.soda.apiserver.follow.model.entity.Follow;
 import com.soda.apiserver.follow.repository.FollowRepository;
+import com.soda.apiserver.review.model.dto.LikeResponseDTO;
 import com.soda.apiserver.review.model.dto.ReviewResponseDTO;
 import com.soda.apiserver.review.model.entity.Category;
 import com.soda.apiserver.review.model.entity.Like;
@@ -330,13 +331,46 @@ public class ReviewController {
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
         Map<String,Object> responseMap = new HashMap<>();
 
-        Review review = reviewRepository.findById(reviewId);
+        List<Like> likeList = likeRepository.findLikeByIdReviewId(reviewId);
+        int likeCount = likeRepository.countByIdReviewId(reviewId);
+        List<LikeResponseDTO> responseLikeList = new ArrayList<>();
 
-//        List<Like> likeList = likeRepository.findLikeByIdReviewId(reviewId);
+        for(Like like : likeList){
+            responseLikeList.add(new LikeResponseDTO(like.getId().getUser(), like.getLikeDate()));
+        }
+
+        responseMap.put("count",likeCount);
+        responseMap.put("list", responseLikeList);
 
         return ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(new ResponseMessage(200, "success",responseMap));
+    }
+
+    @DeleteMapping("like/{reviewId}")
+    public ResponseEntity<?> unlikeReview(@PathVariable int reviewId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+        String userName = null;
+
+        try{
+            userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+        User user = userRepository.findByUserName(userName);
+        Review review = reviewRepository.findById(reviewId);
+
+        Like like = likeRepository.findLikeById(new LikeId(review, user));
+        likeRepository.delete(like);
+
+        return ResponseEntity
+                .noContent()
+                .headers(headers)
+                .build();
     }
 }
