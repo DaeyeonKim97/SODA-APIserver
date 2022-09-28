@@ -1,4 +1,4 @@
-package com.soda.apiserver.recommend.model.dto;
+package com.soda.apiserver.recommend.model.dto.request;
 
 import com.soda.apiserver.review.model.entity.Review;
 

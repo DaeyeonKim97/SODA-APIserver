@@ -1,4 +1,4 @@
-package com.soda.apiserver.recommend.model.dto;
+package com.soda.apiserver.recommend.model.dto.request;
 
 public class AiStoreDTO {
     private String food_category;
