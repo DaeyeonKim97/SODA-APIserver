@@ -10,8 +10,10 @@ import com.soda.apiserver.file.util.OciUtil;
 import com.soda.apiserver.follow.model.entity.Follow;
 import com.soda.apiserver.follow.repository.FollowRepository;
 import com.soda.apiserver.review.model.dto.LikeResponseDTO;
+import com.soda.apiserver.review.model.dto.ReviewCommentDTO;
 import com.soda.apiserver.review.model.dto.ReviewResponseDTO;
 import com.soda.apiserver.review.model.entity.Category;
+import com.soda.apiserver.review.model.entity.Comment;
 import com.soda.apiserver.review.model.entity.Like;
 import com.soda.apiserver.review.model.entity.Review;
 import com.soda.apiserver.review.model.entity.embed.LikeId;
@@ -372,5 +374,64 @@ public class ReviewController {
                 .noContent()
                 .headers(headers)
                 .build();
+    }
+
+    @PostMapping("comment/{reviewId}")
+    public ResponseEntity<?> commentReview(@PathVariable int reviewId, @RequestBody ReviewCommentDTO paramComment){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+        String userName = null;
+
+        try{
+            userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+        User user = userRepository.findByUserName(userName);
+        Review review = reviewRepository.findById(reviewId);
+
+        Comment comment = new Comment(0,user,review,paramComment.getComment(),new java.sql.Date((new Date()).getTime()));
+        commentRepository.save(comment);
+        responseMap.put("reviewId",reviewId);
+        responseMap.put("comment",comment.getContent());
+
+        return ResponseEntity
+                .created(URI.create("/comment"))
+                .headers(headers)
+                .body(new ResponseMessage(201, "success",responseMap));
+    }
+
+    @DeleteMapping("comment/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable int commentId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        Map<String,Object> responseMap = new HashMap<>();
+        String userName = null;
+
+        try{
+            userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+
+        Comment comment = commentRepository.findById(commentId);
+
+        if(userName != comment.getUser().getUserName()){
+            return ResponseEntity
+                    .badRequest()
+                    .body("Not your comment");
+        }
+
+        commentRepository.delete(comment);
+
+        return ResponseEntity
+                .created(URI.create("/comment"))
+                .headers(headers)
+                .body(new ResponseMessage(201, "success",responseMap));
     }
 }
