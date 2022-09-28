@@ -430,8 +430,7 @@ public class ReviewController {
         commentRepository.delete(comment);
 
         return ResponseEntity
-                .created(URI.create("/comment"))
-                .headers(headers)
-                .body(new ResponseMessage(201, "success",responseMap));
+                .noContent()
+                .build();
     }
 }
