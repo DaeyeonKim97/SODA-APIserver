@@ -11,7 +11,7 @@ server:
 spring:
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@soda_high?TNS_ADMIN=./src/main/resources/Wallet_SODA
+    url: jdbc:oracle:thin:@soda_low?TNS_ADMIN=./src/main/resources/Wallet_SODA
     username: SODA
     password: Rlaeodus1130
   jpa:
@@ -23,6 +23,11 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
       location: /Users/dykim/Downloads
+
+#AI api
+api:
+  recommand:
+    url: http://192.168.0.173:5050/returnRecommend
 
 #JWT
 jwt:

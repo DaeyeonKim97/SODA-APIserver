@@ -1,7 +1,7 @@
 package com.soda.apiserver.recommend.controller;
 
-import com.soda.apiserver.auth.model.entity.User;
-import com.soda.apiserver.auth.repository.UserRepository;
+import com.soda.apiserver.user.model.entity.User;
+import com.soda.apiserver.user.repository.UserRepository;
 import com.soda.apiserver.common.response.ResponseMessage;
 import com.soda.apiserver.recommend.model.entity.Favorite;
 import com.soda.apiserver.recommend.model.entity.embed.FavoriteId;

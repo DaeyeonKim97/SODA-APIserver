@@ -1,6 +1,6 @@
 package com.soda.apiserver.review.repository;
 
-import com.soda.apiserver.auth.model.entity.User;
+import com.soda.apiserver.user.model.entity.User;
 import com.soda.apiserver.review.model.entity.Review;
 import com.soda.apiserver.wish.model.entity.Restaurant;
 import org.springframework.data.domain.Pageable;

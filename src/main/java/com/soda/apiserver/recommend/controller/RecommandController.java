@@ -2,8 +2,8 @@ package com.soda.apiserver.recommend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soda.apiserver.auth.model.entity.User;
-import com.soda.apiserver.auth.repository.UserRepository;
+import com.soda.apiserver.user.model.entity.User;
+import com.soda.apiserver.user.repository.UserRepository;
 import com.soda.apiserver.common.response.ResponseMessage;
 import com.soda.apiserver.recommend.model.dto.request.AiFavoriteDTO;
 import com.soda.apiserver.recommend.model.dto.request.AiReviewListDTO;
@@ -14,6 +14,7 @@ import com.soda.apiserver.review.model.entity.Review;
 import com.soda.apiserver.review.repository.CategoryRepository;
 import com.soda.apiserver.review.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -40,6 +41,8 @@ public class RecommandController {
     private final ReviewRepository reviewRepository;
     private final CategoryRepository categoryRepository;
     private final ObjectMapper mapper;
+    @Value("${api.recommand.url}")
+    private String apiUrl;
 
     @Autowired
     public RecommandController(UserRepository userRepository, FavoriteRepository favoriteRepository, ReviewRepository reviewRepository, CategoryRepository categoryRepository, ObjectMapper mapper) {
@@ -80,9 +83,8 @@ public class RecommandController {
         String requestJSON = mapper.writeValueAsString(requestMap);
 
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://192.168.0.173:5050/returnRecommend";
         HttpEntity<?> requestMessage = new HttpEntity<>(requestJSON,headers);
-        HttpEntity<String> response = restTemplate.postForEntity(url, requestMessage,String.class);
+        HttpEntity<String> response = restTemplate.postForEntity(this.apiUrl, requestMessage,String.class);
 
         Map<String,Object> responseObject = mapper.readValue(response.getBody(),Map.class);
         List<AiResponseDTO> responseList = new ArrayList<>();

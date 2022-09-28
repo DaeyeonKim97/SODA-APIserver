@@ -42,13 +42,17 @@ public class RestaurantController {
         Map<String,Object> responseMap = new HashMap<>();
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId);
+        int sum = 0;
         List<ReviewResponseDTO> reviewList = new ArrayList<>();
         for(Review review : reviewRepository.findReviewByRestaurantId(restaurantId, pageable)){
             reviewList.add(new ReviewResponseDTO(review));
+            sum += review.getGrade();
         };
 
         responseMap.put("restaurant",restaurant);
         responseMap.put("reviewList",reviewList);
+        responseMap.put("grade",((float)sum)/((float) reviewList.size()));
+
 
         return ResponseEntity
                 .ok()
