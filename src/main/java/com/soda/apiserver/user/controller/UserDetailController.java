@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,14 @@ public class UserDetailController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
         Map<String,Object> responseMap = new HashMap<>();
+        String myName = null;
+        try{
+            myName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
 
         User user = userRepository.findByUserName(userName);
         OtherUserDTO responseUser = new OtherUserDTO(user);
@@ -53,11 +62,16 @@ public class UserDetailController {
         }
         int followerNum = followRepository.countFollowByIdUser(user);
         int followingNum = followRepository.countFollowByIdFollower(user);
+        boolean isFollow = false;
+        if(followRepository.findByIdUserUserNameAndIdFollowerUserName(userName,myName)!=null){
+            isFollow = true;
+        }
 
         responseMap.put("user",responseUser);
         responseMap.put("follower",followerNum);
         responseMap.put("following",followingNum);
         responseMap.put("reviewList", responseReviewList);
+        responseMap.put("isFollow", isFollow);
 
         return ResponseEntity
                 .ok()
