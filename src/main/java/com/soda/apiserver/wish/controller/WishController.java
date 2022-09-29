@@ -150,14 +150,6 @@ public class WishController {
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
         Map<String,Object> responseMap = new HashMap<>();
 
-        try{
-            userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        } catch (Exception e){
-            return ResponseEntity
-                    .badRequest()
-                    .build();
-        }
-
         User user = userRepository.findByUserName(userName);
         List<Wish> wishList = wishRepository.findWishByIdUser(user);
         List<Restaurant> restaurantList = new ArrayList<>();
