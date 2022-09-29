@@ -27,7 +27,7 @@ spring:
 #AI api
 api:
   recommand:
-    url: http://192.168.0.173:5050/returnRecommend
+    url: https://soda-mtvs.kro.kr/returnRecommend
 
 #JWT
 jwt:
