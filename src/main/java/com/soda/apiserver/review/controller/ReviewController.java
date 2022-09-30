@@ -455,6 +455,19 @@ public class ReviewController {
         }
         responseMap.put("commentList",responseCommentList);
 
+        boolean isLike = false;
+        String userName = null;
+        try{
+            userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+
+        Like userLike = likeRepository.findLikeByIdReviewIdAndIdUserUserName(reviewId,userName);
+        isLike = (userLike != null);
+        responseMap.put("isLike", isLike);
         return ResponseEntity
                 .ok()
                 .headers(headers)

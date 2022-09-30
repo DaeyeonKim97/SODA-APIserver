@@ -10,4 +10,5 @@ public interface LikeRepository extends JpaRepository<Like, LikeId> {
     int countByIdReviewId(int reviewId);
     List<Like> findLikeByIdReviewId(int reviewId);
     Like findLikeById(LikeId id);
+    Like findLikeByIdReviewIdAndIdUserUserName(int reviewId, String userName);
 }
