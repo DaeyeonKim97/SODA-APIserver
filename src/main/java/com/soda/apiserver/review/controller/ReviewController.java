@@ -23,7 +23,9 @@ import com.soda.apiserver.review.repository.CommentRepository;
 import com.soda.apiserver.review.repository.LikeRepository;
 import com.soda.apiserver.review.repository.ReviewRepository;
 import com.soda.apiserver.wish.model.entity.Restaurant;
+import com.soda.apiserver.wish.model.entity.Wish;
 import com.soda.apiserver.wish.repository.RestaurantRepository;
+import com.soda.apiserver.wish.repository.WishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -52,12 +54,13 @@ public class ReviewController {
     private final FollowRepository followRepository;
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
+    private final WishRepository wishRepository;
     private final OciUtil ociUtil = new OciUtil();
     @Value("${spring.servlet.multipart.location}")
     private String configPath;
 
     @Autowired
-    public ReviewController(UserRepository userRepository, ReviewRepository reviewRepository, RestaurantRepository restaurantRepository, CategoryRepository categoryRepository, AttachRepository attachRepository, FollowRepository followRepository, LikeRepository likeRepository, CommentRepository commentRepository) throws IOException {
+    public ReviewController(UserRepository userRepository, ReviewRepository reviewRepository, RestaurantRepository restaurantRepository, CategoryRepository categoryRepository, AttachRepository attachRepository, FollowRepository followRepository, LikeRepository likeRepository, CommentRepository commentRepository, WishRepository wishRepository) throws IOException {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.restaurantRepository = restaurantRepository;
@@ -66,6 +69,7 @@ public class ReviewController {
         this.followRepository = followRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
+        this.wishRepository = wishRepository;
     }
 
     @GetMapping ("recent")
@@ -455,7 +459,6 @@ public class ReviewController {
         }
         responseMap.put("commentList",responseCommentList);
 
-        boolean isLike = false;
         String userName = null;
         try{
             userName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -464,10 +467,17 @@ public class ReviewController {
                     .badRequest()
                     .build();
         }
-
+        boolean isLike = false;
         Like userLike = likeRepository.findLikeByIdReviewIdAndIdUserUserName(reviewId,userName);
         isLike = (userLike != null);
         responseMap.put("isLike", isLike);
+
+        boolean isWish = false;
+        Wish userWish = wishRepository.findWishByIdRestaurantAndIdUserUserName(review.getRestaurant(),userName);
+        isWish = (userWish!=null);
+        responseMap.put("isWish", isWish);
+
+
         return ResponseEntity
                 .ok()
                 .headers(headers)
